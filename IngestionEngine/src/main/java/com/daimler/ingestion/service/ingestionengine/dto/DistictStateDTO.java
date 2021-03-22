@@ -2,13 +2,16 @@ package com.daimler.ingestion.service.ingestionengine.dto;
 
 public class DistictStateDTO {
 
-    private String state;
+    /*private String state;
 
     private String district;
 
-    public DistictStateDTO(String state, String district) {
+    private Double fuelPrice;
+
+    public DistictStateDTO(String state, String district, Double fuelPrice) {
         this.state = state;
         this.district = district;
+        this.fuelPrice = fuelPrice;
     }
 
     public String getState() {
@@ -27,8 +30,16 @@ public class DistictStateDTO {
         this.district = district;
     }
 
+    public Double getFuelPrice() {
+        return fuelPrice;
+    }
+
+    public void setFuelPrice(Double fuelPrice) {
+        this.fuelPrice = fuelPrice;
+    }
+
     @Override
     public String toString(){
-        return  new StringBuilder("{ state:").append(this.state).append(", district:").append(this.district).append("}").toString();
-    }
+        return  new StringBuilder("{ state:").append(this.state).append(", district:").append(this.district).append(", fuelPrice:").append(this.fuelPrice).append("}").toString();
+    }*/
 }

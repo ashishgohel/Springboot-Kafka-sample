@@ -18,6 +18,11 @@ public class RetryInterceptor implements Interceptor {
         Response response =  chain.proceed(request);
         int count=0;
         while(!response.isSuccessful() && count<3){
+            try{
+                Thread.sleep(1000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             response = chain.proceed(request);
         }
         return response;

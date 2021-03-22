@@ -21,21 +21,36 @@ public class CommonConfig {
 
     @Bean
     public Docket api(){
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.daimler")).paths(PathSelectors.any()).build()
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.daimler"))
+                .paths(PathSelectors.any())
+                .build()
                 .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo(){
-        return new ApiInfo("My Rest API", "Description about my API", "Version of my API", "T&C", new Contact("Ashish", "test.come", "test@gmail.com"), "License API", "Licence@url.com", Collections.emptyList());
+        return new ApiInfo("Ingestion Engine",
+                "This module acts as a backend processor for PublishingAgent. It also triggers external API to get fuel prices.",
+                "1.0",
+                "T&C",
+                new Contact("Ashish Gohel", "NA", "ashishgohel.official@gmail.com"),
+                "NA",
+                "NA",
+                Collections.emptyList());
     }
 
+    /**
+     * With basic configuration of OkHttpClient (by setting various timeOut fields), RetryInterceptor is added to limit number of invocation external API in the event of failure.
+     * @return
+     */
     @Bean
     public OkHttpClient client(){
         return new OkHttpClient.Builder()
                 .addInterceptor(new RetryInterceptor())
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
                 .build();
     }
 

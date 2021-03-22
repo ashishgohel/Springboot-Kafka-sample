@@ -15,9 +15,6 @@ public class VehicleDTO implements Serializable {
 
     private String state;
 
-    public VehicleDTO() {
-    }
-
     public VehicleDTO(Long vehicleId, boolean lidStatus, String district, String state, Date reportingTime) {
         this.vehicleId = vehicleId;
         this.lidStatus = lidStatus;

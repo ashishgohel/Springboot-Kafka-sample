@@ -1,6 +1,6 @@
 package com.daimler.ingestion.service.ingestionengine.dto;
 
-import java.util.Arrays;
+
 import java.util.List;
 
 public class FuelPriceDTO {

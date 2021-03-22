@@ -18,11 +18,22 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api(){
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.daimler.vehicle.agent.publishingagent.controller")).paths(PathSelectors.any()).build()
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.daimler.vehicle.agent.publishingagent.controller"))
+                .paths(PathSelectors.any())
+                .build()
                 .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo(){
-        return new ApiInfo("My Rest API", "Description about my API", "Version of my API", "T&C", new Contact("Ashish", "test.come", "test@gmail.com"), "License API", "Licence@url.com", Collections.emptyList());
+        return new ApiInfo("Publishing Agent",
+                "This module acts as a backend processor for PublishingAgent. It also triggers external API to get fuel prices.",
+                "1.0",
+                "T&C",
+                new Contact("Ashish Gohel", "NA", "ashishgohel.official@gmail.com"),
+                "NA",
+                "NA",
+                Collections.emptyList());
     }
 }

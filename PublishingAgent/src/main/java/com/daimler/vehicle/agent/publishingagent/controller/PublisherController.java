@@ -18,11 +18,17 @@ public class PublisherController {
     @Autowired
     private MessagePublisherService publisherService;
 
+    /**
+     *
+     * @param lidStatus
+     * @param district
+     * @param state
+     */
     @PostMapping("/publish")
-    public void sendMessage(@RequestParam("lidStatus") boolean lidStatus, @RequestParam("district") String district) {
+    public void sendMessage(@RequestParam("lidStatus") boolean lidStatus, @RequestParam("district") String district, @RequestParam("state") String state) {
         logger.info(" PublisherController : sendMessage() : lidStatus="+lidStatus+" ::  district="+district);
         logger.info(" --- Sending message --- ");
-        publisherService.sendMessage(lidStatus, district);
+        publisherService.sendMessage(lidStatus, district, state);
     }
 
 }

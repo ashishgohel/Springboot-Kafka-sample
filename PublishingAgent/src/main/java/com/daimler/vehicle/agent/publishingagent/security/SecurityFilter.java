@@ -50,7 +50,7 @@ public class SecurityFilter implements Filter {
 
         logger.info("Authorization token val = "+token);
 
-        if(!authenticate(token)){
+        if(token == null || token.length()<1 || !authenticate(token)){
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
 //            httpServletResponse.getWriter().write("Too many requests");
             return;
@@ -104,5 +104,26 @@ public class SecurityFilter implements Filter {
     private  boolean authenticate (String token){
         return decrypt(token).equals(vehicleId+"_Vehicle-Agent");
     }
+
+    /**
+     * ---------------   Modified Caesar Cipher   ---------------
+     * Encryption logic
+     * @param message
+     * @return
+     */
+    /*private static String encrypt(String message){
+        String encodedMessage = Base64.getEncoder().encodeToString(message.getBytes());
+
+        //Reversing the String
+        String reverseString = new StringBuffer(encodedMessage).reverse().toString();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        final int OFFSET = 13;
+
+        for (int i = 0; i < reverseString.length(); i++) {
+            stringBuilder.append((char)(reverseString.charAt(i)+OFFSET));
+        }
+        return stringBuilder.toString();
+    }*/
 
 }

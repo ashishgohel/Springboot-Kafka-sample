@@ -15,9 +15,12 @@ import java.util.Date;
 public class MessagePublisherServiceImpl implements MessagePublisherService{
 
     private final Logger logger = LoggerFactory.getLogger(MessagePublisherServiceImpl.class);
-    private final String TOPIC = "my_topic";
 
     private static boolean isLidOpen = false;
+
+    private static String latestState = null;
+
+    private static String latestDistrict = null;
 
     @Value("${vehicleId}")
     private Long vehicleId;
@@ -25,46 +28,56 @@ public class MessagePublisherServiceImpl implements MessagePublisherService{
     @Value("${district}")
     private String district;
 
+    @Value("${state}")
+    private String state;
+
+    @Value("${TOPIC}")
+    private String TOPIC;
+
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
-
 
     /**
      * This API will be invoked externally by other service on the event of lid is open or closed.
      * This Agent will be residing at the vehicle. Hence vehicle will have its vehicleid.
      * District is from the place where car was purchased
      * @param lidOpenStatus - provides the latest status of the lid
-     * @param providedDistrict - last known location of vehicle
+     * @param providedDistrict - last known district location of vehicle
+     * @param providedState - last know state location of vehicle
      */
     @Override
-    public void sendMessage(boolean lidOpenStatus, String providedDistrict){
+    public void sendMessage(boolean lidOpenStatus, String providedDistrict, String providedState){
         isLidOpen = lidOpenStatus;
+
         //Taking default location if provided location is empty string
-        String dist = (providedDistrict != null && providedDistrict.length()<1)?district:providedDistrict;
+        latestDistrict = getLatestDistrict(providedDistrict);
+        latestState = getLatestState(providedState);
 
         //TODO :: need to change from new Date() to system.nanoTime
-
-        VehicleDTO vehicleInfo = new VehicleDTO(vehicleId, isLidOpen, dist, new Date());
-        StringBuilder message = new StringBuilder("Sending Message = ").append(vehicleInfo);
-
-        logger.info(message.toString());
-
-        kafkaTemplate.send(TOPIC,vehicleInfo);
+        publish( new VehicleDTO(vehicleId, isLidOpen, latestDistrict, latestState, new Date()));
     }
 
-    /**
-     * TODO: Create Scheduler to publish message every 120 seconds
-     */
+
     /**
      * publishing messaged every 2 minutes
      */
     @Scheduled(cron = "0 0/2 * * * *")
     public void sendHeartBeatMessage(){
-        VehicleDTO vehicleInfo = new VehicleDTO(vehicleId, isLidOpen, district, new Date());
+        logger.info(" ========== SENDING HEARTHBEAT MESSAGE ========");
+        publish(new VehicleDTO(vehicleId, isLidOpen, getLatestDistrict(latestDistrict), getLatestState(latestState), new Date()));
+    }
+
+    private void publish(VehicleDTO vehicleInfo){
         StringBuilder message = new StringBuilder("Sending Message = ").append(vehicleInfo);
-        /**
-         * TODO :: Sending message
-         */
-        System.out.println(" ========== SENDING HEARTHBEAT MESSAGE ========");
+        logger.info(message.toString());
+        kafkaTemplate.send(TOPIC,vehicleInfo);
+    }
+
+    private String getLatestDistrict(String str){
+        return (str == null || str.length()<1)?district:str;
+    }
+
+    private String getLatestState(String str){
+        return (str == null || str.length()<1)?state:str;
     }
 }
