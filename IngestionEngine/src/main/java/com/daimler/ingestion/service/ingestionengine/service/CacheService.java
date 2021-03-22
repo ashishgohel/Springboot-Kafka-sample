@@ -19,8 +19,23 @@ public class CacheService {
 
 //    @Async
     public static void setFuelPriceCache() {
-        STATES.forEach((k,v) -> CacheService.STATE_FUEL_PRICE_CACHE.putIfAbsent(k, Util.randomNumber()));
+        if(STATES.size()>0)
+            STATES.forEach((k,v) -> CacheService.STATE_FUEL_PRICE_CACHE.putIfAbsent(k, Util.randomNumber()));
         logger.info("Sample Fuel dataset for states is generated = "+CacheService.STATE_FUEL_PRICE_CACHE.toString());
+    }
+
+    /**
+     * This is the worst case scenario when external service's server is down
+     * @param state
+     * @return
+     */
+    public static Double getStateCacheValue(String state){
+        logger.info(" Explicitly setting the state value and mock price for it");
+        String stat = Util.sanitizeString(state).toUpperCase();
+        CacheService.STATES.putIfAbsent(stat, state);
+        Double price = Util.randomNumber();
+        STATE_FUEL_PRICE_CACHE.putIfAbsent(stat,price);
+        return price;
     }
 
 }

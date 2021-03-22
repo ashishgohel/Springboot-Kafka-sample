@@ -1,6 +1,5 @@
 package com.daimler.ingestion.service.ingestionengine.service;
 
-import com.daimler.ingestion.service.ingestionengine.dto.DistictStateDTO;
 import com.daimler.ingestion.service.ingestionengine.dto.FuelPriceDTO;
 import com.daimler.ingestion.service.ingestionengine.util.Util;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,9 +28,6 @@ public class ExternalServiceImpl implements ExternalService{
     @Value("${states.url}")
     private String STATES_URL;
 
-    @Value("${districts.url}")
-    private String DISTRICT_URL;
-
     @Value("${domain.url}")
     private String DOMAIN_URL;
 
@@ -47,14 +43,13 @@ public class ExternalServiceImpl implements ExternalService{
             response = client.newCall(request).execute();
             result = mapper(response);
         }catch (Exception e){
-            logger.error("ExternalServiceImpl :: getStates() :: ERROR Encountered while fetching states ");
+            logger.error("ExternalServiceImpl :: getStates() :: ERROR Encountered while fetching states "+e.getMessage());
         }finally {
             response.close();
         }
         logger.info("States = "+result);
         return result;
     }
-
 
     private List<String> mapper(Response response){
         ObjectMapper mapper = new ObjectMapper();
@@ -79,7 +74,6 @@ public class ExternalServiceImpl implements ExternalService{
             ObjectMapper mapper = new ObjectMapper();
             ArrayList<FuelPriceDTO> fuelPriceDTOS = null;
             fuelPriceDTOS = mapper.readValue(response.body().string(), new TypeReference<ArrayList<FuelPriceDTO>>() {});
-//            logger.info("getFuelPrice() :: FuelPrice DTO = "+fuelPriceDTOS.toString());
 
             for (FuelPriceDTO dto:fuelPriceDTOS) {
                 if(Util.sanitizeString(dto.getDistrict()).equalsIgnoreCase(Util.sanitizeString(district))){
@@ -87,9 +81,8 @@ public class ExternalServiceImpl implements ExternalService{
                     break;
                 }
             }
-//            logger.info("FUEL price for district {} is {}",district,fuelPrice);
         }catch (Exception e){
-            logger.error("ExternalServiceImpl :: getFuelPrice() :: ERROR Encountered while fetching fuel price ");
+            logger.error("ExternalServiceImpl :: getFuelPrice() :: ERROR Encountered while fetching fuel price "+e.getMessage());
         }finally {
             response.close();
         }

@@ -49,19 +49,29 @@ From system point of view, mainly there are two modules:
 	- Links: 
 		-Publishing Agent: http://localhost:20001/swagger-ui.html
 		-Ingestion Engine: http://localhost:20002/swagger-ui.html
-		-PublishingAgentAPI: localhost:20001/agent/publish?lidStatus=false&district=WEST GODAVARIA&state=Andhra Pradesh
 	- Setup Kakfa on 9092 port with group-id as group-id.
 	- PublishingAgent is listening to 20001 port.
-	- 
+	- Run IngestionEngineApplication.java and PublishingAgentApplication.java
+	- Either fetch authorization token provided for simplicity in application.properties of PublishingAgent module or generate token from the code provided in the Security filter of the same module. For different vehicle, vehicleId needs to be changed in application.properties and so will change the authorization token.
+	- Hit url= http://localhost:20001/agent/publish?lidStatus={}&district={}&state={}
+		where lidStatus is either false when lid is closed or true when lid is open,
+		district is from where vehicle is fueling,
+		state is where district is located.
+		e.g. http://localhost:20001/agent/publish?lidStatus=false&district=WEST GODAVARIA&state=Andhra Pradesh
+	- Above url is of type POST and will require Authorization Header to pass the token to authenticate.
+	- First pass the lidStatus as true then, after sometime, pass value false for the same district and state combination. 
+	- Notice on the IngestionEngine logs, Total cost and the Amount of Fuel filled in the tank is printed.
 
 ## Limitations:
-	-Due to time constriant, these features ( SSL, OAuth2.0 , Jwt , Message encrption and SSL on kafka queues) are not incorporated.
+	- Due to time constriant, these features ( SSL, OAuth2.0 , Jwt , Message encrption and SSL on kafka queues) are not incorporated.
+	- External API is not robust and intermittently fails to provide data. Hence, while booting up the Ingestion Engine, BootstrapLoader.java class loads sample values of 
 
 ## TODO:
 	- Dockerization
 	- Test Cases (I have tested with Postman with wide variety of use cases but didn't get time to write test cases)
 	- Proper Authentication
 	- In-depth documentation (both Readme.md and Swagger)
+	- Granual modularization of code to keep it more generic
 
 ## External Service Reference:
 	-https://fuelprice-api-india.herokuapp.com/

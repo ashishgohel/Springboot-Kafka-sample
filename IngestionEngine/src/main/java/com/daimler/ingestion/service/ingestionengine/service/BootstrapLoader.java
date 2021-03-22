@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 @Service
-public class LocationServiceImpl implements LocationService{
+public class BootstrapLoader {
 
-    private static final Logger logger = LoggerFactory.getLogger(LocationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BootstrapLoader.class);
 
     @Autowired
     private ExternalService externalService;
@@ -22,7 +22,7 @@ public class LocationServiceImpl implements LocationService{
         try{
             getStates();
         }catch (Exception e){
-            logger.error("ERROR generated while fetching STATE details :: " + e );
+            logger.error("ERROR generated while fetching STATE details :: " + e.getMessage() );
         }
     }
 
@@ -31,8 +31,6 @@ public class LocationServiceImpl implements LocationService{
             CacheService.STATES.putIfAbsent(Util.sanitizeString(state).toUpperCase(), state);
         }
         CacheService.setFuelPriceCache();
-        logger.info("States data is loaded and Sample Fuel Data set is loaded as well.");
-
     }
 
 }

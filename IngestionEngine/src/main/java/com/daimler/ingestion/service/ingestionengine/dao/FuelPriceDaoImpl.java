@@ -46,6 +46,10 @@ public class FuelPriceDaoImpl implements FuelPriceDao{
             logger.info("Fetching from Predefined populated sample fuel price");
             fuelCost = CacheService.STATE_FUEL_PRICE_CACHE.get(Util.sanitizeString(state).toUpperCase());
         }
+
+        if(fuelCost == null)
+            fuelCost = CacheService.getStateCacheValue(state);
+
         return fuelCost;
     }
 
