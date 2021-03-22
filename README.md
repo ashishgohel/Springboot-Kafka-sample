@@ -1,4 +1,4 @@
-# DaimlerAssignment - Calculate number of litre of fuel has been filled along with the total fuel cost.
+# Calculate amount of fuel has been filled and corresponding fuel cost.
 
 **Tech stack**: Java, SpringBoot, Kafka.
 
