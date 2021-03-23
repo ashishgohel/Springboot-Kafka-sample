@@ -10,11 +10,11 @@ From system point of view, mainly there are two modules:
 
 ## Publisher Agent:
 	- Features: 
-		- Authorization: Modified Caesar Cipher encryption is enforced. As mentioned earlier, there will be unique identifier, vehicleId, with which encrytion code will be generated. As stated, it is modified hashing function so it won't be as much easy to crack it. Due to time limitation, I have gone ahead with this approach. I could have gone with Jwt with OAuth2.0 but such level sophistication was not required.
-		- Throttling/Rate Limiting: To mitigate DOS attacks, module has the Security Filter which allows other modules to invoke 3 requests per second at max. It tracks the IP address and keeps a counter against it.  
-		- API Documentation: Swagger2.0 
-		- Scheduler : every 2 minutes, beacon signal is published with latest location along lid status (true when lid is open, false when lid is closed)
-		- Asynchronous Message publishing: both, scheduled and instant API call publishes message on Kafka topic which is robust, reliable and efficient.
+		- **Authorization**: **Modified Caesar Cipher encryption** is enforced. As mentioned earlier, there will be unique identifier, vehicleId, with which encrytion code will be generated. As stated, it is modified hashing function so it won't be as much easy to crack it. Due to time limitation, I have gone ahead with this approach. I could have gone with Jwt with OAuth2.0 but such level sophistication was not required.
+		- **Throttling/Rate Limiting**: To **mitigate DOS attacks**, module has the Security Filter which allows other modules to invoke 3 requests per second at max. It tracks the IP address and keeps a counter against it.  
+		- API Documentation: **Swagger2.0** 
+		- **Scheduler** : every 2 minutes, beacon signal is published with latest location along lid status (true when lid is open, false when lid is closed)
+		- **Asynchronous Message publishing**: both, scheduled and instant API call publishes message on Kafka topic which is robust, reliable and efficient.
 	- Consideration:
 		- In the original problem statement, only city was to be provided. However, taking liberty to modify it and add additional parameters for robust system. Instead of city, district is to be provided along with the state. Hence caller is responsible for providing 3 Request parameters (lidStatus, district, state) when it invokes /publish API.
 		- Authorization header: caller needs to provide "Authorization" within header along with the encrypted key. Encryption logic is commented within SecurityFilter in the code base. For simplicity, token is provided in the application.properties if anyone wants to test
@@ -27,23 +27,21 @@ From system point of view, mainly there are two modules:
 
 ## Ingestion Engine:
 	- Features:
-		- Caching fuel price for district and state for 24 hours and evict policy
-		- Retry mechanism: when external API is down, retrial mechanism is in place to hit it 3 times 
+		- **Caching fuel price** for district and state **for 24 hours** and evict policy
+		- **Retry mechanism**: when external API is down, retrial mechanism is in place to hit it 3 times 
 		- API Documentation: Swagger2.0
 		- External API for latest fuel price
-		- Multi vehicle tracking 
+		- **Multi vehicle tracking** 
 		- Calculates the amount of filled fuel and total cost of it
 		- In case external API is down or unavailable, fallback mechanism is in place which provides mock fuel price for that state
 	- Consideration:
 		- Total fuel cost and amount of fuel filled in vechile will be calculated once the lid is closed.
 
-		
-
-
 ## Assumptions:
 	- Connection is uninterrupted to get the precise tracking of location
 	- lid is properly closed
 	- Edge case: Cache Eviction happens on midnight. When it is in progress, fuel price of day prior will be calculated
+	- Both modules resides in the same timezone
 
 ## Steps to run the code:
 	- Links: 
